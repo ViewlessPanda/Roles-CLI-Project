@@ -1,6 +1,7 @@
 from rich import print as rprint
 from typing import List, Optional
 import cli.interface
+import json
 from utils.stuff import slow_type as slow
 
 gigachad_art = """
@@ -34,6 +35,7 @@ class RoleManager: # All of the main program functions
     def __init__(self, username: Optional[str] = None):
         self.roles = []
         self.username = username
+        self.role_dict = {}
 
     def run(self): # WHAT ACTUALLY HAPPENS
         cli.interface.clear_screen()
@@ -59,20 +61,45 @@ class RoleManager: # All of the main program functions
         rprint("[bold green]Your roles are:[/bold green]")
         for role in self.roles:
             print(f"  - {role}")
+            
+     
+
+
+
+
+    def add_role(self, role: str, status: bool):
+        self.role_dict.update({role:status})
+
+    def save_role_dict(self):
+        # Serializing json
+        
+        json_object = json.dumps(self.role_dict, indent=len(self.role_dict))
+
+        # Writing to sample.json
+        with open("test.json", "w") as outfile:
+            outfile.write(json_object)
+      
+
+
+
+
 
     def run_setup(self):
         # prompt
         print("-------------------------------------------")
-        # write user_input to json file
+        
         slow("What can I call you?", 0.03, True)
         user_input = input()
-        # write user_input
+        self.add_role(user_input, True)
+        
         slow("Are you a follower of Christ?", 0.03, True)
         user_input = input()
         if user_input.lower() in ("y", "yes"):
+            self.add_role("Christ follower", True)
             slow("That's great to hear! I made this tool specifically so that people like us can structure our lives to better serve him!", 0.03, True)
         # write user_input
         elif user_input.lower() in ("n", "no"):
+            self.add_role("Christ follower", False)
             slow("Thanks for sharing. I just want you to know that Jesus loves you, and that if you're lost in the toxic world of self-improvement HE can legitimately rescue you from it - if you let him.", 0.03, True)
             slow("John 3:16 says: 'For God so loved the world, that he gave his only Son, that whoever believes in him should not perish but have eternal life.", 0.03, True)
             slow("Anyway ~", 0.03, True)
@@ -82,52 +109,85 @@ class RoleManager: # All of the main program functions
         if user_input.lower() in ("y", "yes"):
             slow("Which one? (type 'married' or 'relationship')", 0.03, True)
             user_input = input()
-            # write user_input
+            self.add_role(user_input, True)
+        
         elif user_input.lower() in ("married", "relationship", "serious relationship"):
-            user_input = input()
-            # write user_input
+            
+            self.add_role(user_input, True)
+
+        elif user_input.lower() in ("n", "no"):
+            slow("Got it.", 0.03, True)
+            self.add_role("Married", False)
 
         slow("Do you have living relatives?", 0.03, True)
         user_input = input()
-        # write user_input
 
         if user_input.lower() in ("yes", "y"):
-            print("nice")
-            # write user_input
+            slow("That's great to hear", 0.03, True)
+            self.add_role("Living Relatives", True)
+            
         elif user_input.lower() in ("n", "no"):
-            print("nice")
-            # write user_input
+            slow("I'm sorry to hear that :/", 0.03, True)
+            self.add_role("Living Relatives", False)
+            
 
         slow("Do you have any friends?", 0.03, True)
         user_input = input()
-        # write user_input
+        
+        if user_input.lower() in ("yes", "y"):
+            slow("Wonderful!", 0.03, True)
+            self.add_role("Friends", True)
+
+        elif user_input.lower() in ("n", "no"):
+            slow("Oof.", 0.03, True)
+            self.add_role("Friends", False)
+
 
         slow("Do you work a job?", 0.03, True)
         user_input = input()
-        # write user_input
+
+        if user_input.lower() in ("yes", "y"):
+            slow("Nice!", 0.03, True)
+            self.add_role("Job", True)
+
+        elif user_input.lower() in ("n", "no"):
+            slow("Okay.", 0.03, True)
+            self.add_role("Job", False)
 
         slow("Are you a student?", 0.03, True)
         user_input = input()
-        # write user_input
+
+        if user_input.lower() in ("yes", "y"):
+            slow("Cool!", 0.03, True)
+            self.add_role("Student", True)
+
+        elif user_input.lower() in ("n", "no"):
+            slow("Got it.", 0.03, True)
+            self.add_role("Student", False)
 
         slow("Do you have any side projects, or things that you're passionate about?", 0.03, True)
         user_input = input()
         if user_input.lower() in ("yes", "y"):
             slow("What are they? (type '0' when you're finished)", 0.03, True)
-            while True:
+            val = True
+            while val == True:
                 user_input = input()
                 if user_input == "0":
-                    return False
+                    val = False
                 else:
                     # write user_input
-                    print("Got it, what else?")
+                    
+                    self.add_role(user_input, True)
+                    slow("Got it, what else?", 0.03, True)
 
             # write user_input
         elif user_input.lower() in ("n", "no"):
-            print("nice")
-            # write user_input
-        # write user_input
-
+            slow("Perfect, that makes my life easier!", 0.03, True)
+            self.add_role("Hobbies", False)
+            
+        print(self.role_dict)
+        self.save_role_dict()
+        self.run()
         
 
     def __repr__(self):
