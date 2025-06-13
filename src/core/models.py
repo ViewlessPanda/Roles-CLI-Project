@@ -1,6 +1,8 @@
 from rich import print as rprint
 from typing import List, Optional
 import cli.interface
+from tabulate import tabulate
+from datetime import datetime
 import os
 import json
 from utils.stuff import slow_type as slow
@@ -50,10 +52,10 @@ class RoleManager: # All of the main program functions
             slow(f"What would you like to do today {self.role_dict['Username']}?", 0.03, True)
             slow("1. Generate Today's Schedule", 0.03, True)
             slow("2. Update Roles", 0.03, True)
+            slow("3. New Commitment", 0.03, True)
             user_input = input()
             if user_input == "1":
-                print("FIXME")
-                exit()
+                self.generate_schedule()
             elif user_input == "2":
                 self.run_setup()            
 
@@ -96,8 +98,6 @@ class RoleManager: # All of the main program functions
         with open("user_profile.json", "w") as outfile:
             outfile.write(json_object)
       
-
-
 
 
 
@@ -207,6 +207,28 @@ class RoleManager: # All of the main program functions
         print(self.role_dict)
         self.save_role_dict()
         self.run()
+        
+
+
+    def generate_schedule(self):
+        cli.interface.clear_screen()
+        start_time = datetime.now()
+        
+        if start_time.hour > 12:
+            hour = start_time.hour - 12
+            AM_PM = "PM"
+
+        else:
+            hour = start_time.hour
+            AM_PM = "AM"
+
+
+        readable_time = (f'{hour}:{start_time.minute} {AM_PM}')
+        schedule = [[readable_time, "Make schedule", "Child of God"]]
+
+        print(tabulate(schedule, headers=["Time", "Activity", "Role"], tablefmt="fancy_grid"))
+        exit()
+        
         
 
     def __repr__(self):
