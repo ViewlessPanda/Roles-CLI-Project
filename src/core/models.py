@@ -37,6 +37,7 @@ class RoleManager: # All of the main program functions
         self.roles = []
         self.username = username
         self.role_dict = {}
+        self.main_loop = True
 
     def run(self): # WHAT ACTUALLY HAPPENS
         cli.interface.clear_screen()
@@ -44,8 +45,17 @@ class RoleManager: # All of the main program functions
         slow(gigachad_art, 0.01, True)
         self.load_roles()
         #where the rest of the program takes place
-        
-        
+        while self.main_loop == True:
+
+            slow(f"What would you like to do today {self.role_dict['Username']}?", 0.03, True)
+            slow("1. Generate Today's Schedule", 0.03, True)
+            slow("2. Update Roles", 0.03, True)
+            user_input = input()
+            if user_input == "1":
+                print("FIXME")
+                exit()
+            elif user_input == "2":
+                self.run_setup()            
 
     def load_roles(self):
         if os.path.exists("user_profile.json"):
@@ -67,12 +77,12 @@ class RoleManager: # All of the main program functions
     def display_roles(self):
         rprint("[bold green]Your roles are:[/bold green]")
         for role in self.role_dict:
-            print(f"  - {role}")
+            if self.role_dict[role] == True:
+
+                slow(f"  - {role}", 0.03, True)
+                print("-------------------------------------------")
             
-     
-
-
-
+    
 
     def add_role(self, role: str, status: bool):
         self.role_dict.update({role:status})
@@ -93,11 +103,12 @@ class RoleManager: # All of the main program functions
 
     def run_setup(self):
         # prompt
+        cli.interface.clear_screen()
         print("-------------------------------------------")
         
         slow("What can I call you?", 0.03, True)
         user_input = input()
-        self.add_role(user_input, True)
+        self.add_role("Username", user_input)
         
         slow("Are you a follower of Christ?", 0.03, True)
         user_input = input()
@@ -115,28 +126,28 @@ class RoleManager: # All of the main program functions
         slow("Are you married or in a serious relationship?", 0.03, True)
         user_input = input()
         if user_input.lower() in ("y", "yes"):
-            slow("Which one? (type 'married' or 'relationship')", 0.03, True)
-            user_input = input()
-            self.add_role(user_input, True)
+           # slow("Which one? (type 'married' or 'relationship')", 0.03, True)
+           # user_input = input()
+            self.add_role("Partner", True)
         
         elif user_input.lower() in ("married", "relationship", "serious relationship"):
             
-            self.add_role(user_input, True)
+            self.add_role("Partner", True)
 
         elif user_input.lower() in ("n", "no"):
             slow("Got it.", 0.03, True)
-            self.add_role("Married", False)
+            self.add_role("Partner", False)
 
         slow("Do you have living relatives?", 0.03, True)
         user_input = input()
 
         if user_input.lower() in ("yes", "y"):
             slow("That's great to hear", 0.03, True)
-            self.add_role("Living Relatives", True)
+            self.add_role("Relative", True)
             
         elif user_input.lower() in ("n", "no"):
             slow("I'm sorry to hear that :/", 0.03, True)
-            self.add_role("Living Relatives", False)
+            self.add_role("Relative", False)
             
 
         slow("Do you have any friends?", 0.03, True)
@@ -144,11 +155,11 @@ class RoleManager: # All of the main program functions
         
         if user_input.lower() in ("yes", "y"):
             slow("Wonderful!", 0.03, True)
-            self.add_role("Friends", True)
+            self.add_role("Friend", True)
 
         elif user_input.lower() in ("n", "no"):
             slow("Oof.", 0.03, True)
-            self.add_role("Friends", False)
+            self.add_role("Friend", False)
 
 
         slow("Do you work a job?", 0.03, True)
@@ -156,11 +167,11 @@ class RoleManager: # All of the main program functions
 
         if user_input.lower() in ("yes", "y"):
             slow("Nice!", 0.03, True)
-            self.add_role("Job", True)
+            self.add_role("Employee", True)
 
         elif user_input.lower() in ("n", "no"):
             slow("Okay.", 0.03, True)
-            self.add_role("Job", False)
+            self.add_role("Employee", False)
 
         slow("Are you a student?", 0.03, True)
         user_input = input()
