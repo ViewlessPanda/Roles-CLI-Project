@@ -20,10 +20,3 @@ Roles is a command-line utility designed to help you identify your key roles in 
 
 ## ⚙️ Installation - include any instructions for necessary libraries etc.
 pip install rich
-
-
-// "Here's how you can get a copy of this project from GitHub and open it on your computer using the terminal."
-### Clone the repository - NOT made yet
-```bash
-git clone https://github.com/yourusername/your-cli-project.git
-cd your-cli-project

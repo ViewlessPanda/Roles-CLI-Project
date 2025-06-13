@@ -1,6 +1,7 @@
 from rich import print as rprint
 from typing import List, Optional
 import cli.interface
+import os
 import json
 from utils.stuff import slow_type as slow
 
@@ -42,11 +43,18 @@ class RoleManager: # All of the main program functions
         print("Welcome back to \nR. O. L. E. S.\n-------------------------------------------\n")
         slow(gigachad_art, 0.01, True)
         self.load_roles()
+        #where the rest of the program takes place
+        
         
 
     def load_roles(self):
-        self.roles = []
-        if self.roles == []:
+        if os.path.exists("user_profile.json"):
+
+            with open('user_profile.json', 'r') as file:
+                self.role_dict = json.load(file)
+                self.display_roles()
+            
+        else:
             slow("Looks like you're a first time user!", 0.03, True)
             slow("Run initial setup?", 0.03, True)
             yes_no = input()
@@ -54,12 +62,11 @@ class RoleManager: # All of the main program functions
                 self.run_setup()
             else:
                 print("bruh")
-        else:
-            self.display_roles()
+
 
     def display_roles(self):
         rprint("[bold green]Your roles are:[/bold green]")
-        for role in self.roles:
+        for role in self.role_dict:
             print(f"  - {role}")
             
      
@@ -76,7 +83,7 @@ class RoleManager: # All of the main program functions
         json_object = json.dumps(self.role_dict, indent=len(self.role_dict))
 
         # Writing to sample.json
-        with open("test.json", "w") as outfile:
+        with open("user_profile.json", "w") as outfile:
             outfile.write(json_object)
       
 
@@ -97,13 +104,14 @@ class RoleManager: # All of the main program functions
         if user_input.lower() in ("y", "yes"):
             self.add_role("Christ follower", True)
             slow("That's great to hear! I made this tool specifically so that people like us can structure our lives to better serve him!", 0.03, True)
-        # write user_input
+        
         elif user_input.lower() in ("n", "no"):
             self.add_role("Christ follower", False)
             slow("Thanks for sharing. I just want you to know that Jesus loves you, and that if you're lost in the toxic world of self-improvement HE can legitimately rescue you from it - if you let him.", 0.03, True)
             slow("John 3:16 says: 'For God so loved the world, that he gave his only Son, that whoever believes in him should not perish but have eternal life.", 0.03, True)
             slow("Anyway ~", 0.03, True)
-        # write user_input
+       
+       # FIXME: KNOWN BUG WITH INPUT
         slow("Are you married or in a serious relationship?", 0.03, True)
         user_input = input()
         if user_input.lower() in ("y", "yes"):
