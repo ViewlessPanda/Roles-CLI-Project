@@ -6,6 +6,7 @@ from datetime import datetime
 import os
 import json
 from utils.stuff import slow_type as slow
+from core import task_database
 
 gigachad_art = """
 ⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⠛⠛⠋⠉⠈⠉⠉⠉⠉⠛⠻⢿⣿⣿⣿⣿⣿⣿⣿⠀
@@ -33,6 +34,12 @@ gigachad_art = """
 ⣿⣿⣿⣿⣿⣿⣿⣿⡿⠛⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⢐⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀
 ⣿⣿⣿⣿⠿⠛⠉⠉⠁⠀⢻⣿⡇⠀⠀⠀⠀⠀⠀⢀⠈⣿⣿⡿⠉⠛⠛⠛⠉⠉⠀⠀
 """
+
+class Task:
+    def __init__(self, title, duration, priority_level):
+        self.title = title
+        self.duration = duration
+        self.priority_level = priority_level
 
 class RoleManager: # All of the main program functions
     def __init__(self, username: Optional[str] = None):
@@ -98,8 +105,6 @@ class RoleManager: # All of the main program functions
         with open("user_profile.json", "w") as outfile:
             outfile.write(json_object)
       
-
-
 
     def run_setup(self):
         # prompt
@@ -213,6 +218,8 @@ class RoleManager: # All of the main program functions
     def generate_schedule(self):
         cli.interface.clear_screen()
         start_time = datetime.now()
+        schedule = []
+        
         
         if start_time.hour > 12:
             hour = start_time.hour - 12
@@ -222,9 +229,27 @@ class RoleManager: # All of the main program functions
             hour = start_time.hour
             AM_PM = "AM"
 
+        
+    
+        for role in self.role_dict.keys():
+            #print(self.role_dict[role])
+            inner = []
+            if self.role_dict[role] == True: # If user has a given role
 
-        readable_time = (f'{hour}:{start_time.minute} {AM_PM}')
-        schedule = [[readable_time, "Make schedule", "Child of God"]]
+                inner.append(role)
+
+                for element in task_database.Christ_Follower.values():
+
+                    if element["priority"] == 0:
+
+                        task = Task(element["name"], element["duration"], element["priority"])
+                    
+                    readable_time = (f'{hour}:{start_time.minute} {AM_PM}')
+                    
+                    schedule.append([readable_time, task.title, inner])
+
+  
+       # schedule.append([readable_time, "Make schedule", "Christ follower"])
 
         print(tabulate(schedule, headers=["Time", "Activity", "Role"], tablefmt="fancy_grid"))
         exit()
