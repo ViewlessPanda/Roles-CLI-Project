@@ -214,47 +214,66 @@ class RoleManager: # All of the main program functions
         self.run()
         
 
-
     def generate_schedule(self):
+        import core.task_database as task_database
         cli.interface.clear_screen()
         start_time = datetime.now()
         schedule = []
-        
-        
-        if start_time.hour > 12:
-            hour = start_time.hour - 12
+
+        # Initial time setup
+        hour = start_time.hour
+        minute = start_time.minute
+        AM_PM = "AM"
+
+        if hour >= 12:
             AM_PM = "PM"
+            if hour > 12:
+                hour -= 12
+        elif hour == 0:
+            hour = 12  # midnight
 
-        else:
-            hour = start_time.hour
-            AM_PM = "AM"
+        current_hour = hour
+        current_minute = minute
 
-        
-    
         for role in self.role_dict.keys():
-            #print(self.role_dict[role])
-            inner = []
-            if self.role_dict[role] == True: # If user has a given role
+            task_count = 1
+            if self.role_dict[role] == True:
+                role_name = [role]
 
-                inner.append(role)
 
-                for element in task_database.Christ_Follower.values():
 
-                    if element["priority"] == 0:
+                # for role category in task_dict
 
-                        task = Task(element["name"], element["duration"], element["priority"])
-                    
-                    readable_time = (f'{hour}:{start_time.minute} {AM_PM}')
-                    
-                    schedule.append([readable_time, task.title, inner])
+                for role_category in task_database.task_dict.values():
+                
+                    # for specific task in task_dict
+                
+                    for task_attribute in role_category.values():
 
-  
-       # schedule.append([readable_time, "Make schedule", "Christ follower"])
+                        if task_attribute["priority"] == 0:
+                            task = Task(task_attribute["name"], task_attribute["duration"], task_attribute["priority"])
+
+                            # Build readable time
+                            readable_time = f'{current_hour}:{str(current_minute).zfill(2)} {AM_PM}'
+                            schedule.append([readable_time, task.title, role_name[0]])
+                            task_count += 1
+
+                            # Update minute
+                            current_minute += task.duration
+
+                            # Handle overflow
+                            while current_minute >= 60:
+                                current_minute -= 60
+                                current_hour += 1
+                                if current_hour == 12:
+                                    AM_PM = "PM" if AM_PM == "AM" else "AM"
+                                elif current_hour > 12:
+                                    current_hour -= 12
 
         print(tabulate(schedule, headers=["Time", "Activity", "Role"], tablefmt="fancy_grid"))
         exit()
-        
-        
+
+
 
     def __repr__(self):
         return(f"RoleManager(username='{self.username}')")
