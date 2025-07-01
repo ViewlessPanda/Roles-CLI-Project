@@ -8,7 +8,9 @@ import json
 from utils.stuff import slow_type as slow
 from core import task_database
 
-gigachad_art = """
+gigachad_art = ":)"
+
+"""
 ⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⠛⠛⠋⠉⠈⠉⠉⠉⠉⠛⠻⢿⣿⣿⣿⣿⣿⣿⣿⠀
 ⣿⣿⣿⣿⣿⡿⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⢿⣿⣿⣿⣿⠀
 ⣿⣿⣿⣿⡏⣀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣤⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠙⢿⣿⣿⠀
@@ -35,11 +37,28 @@ gigachad_art = """
 ⣿⣿⣿⣿⠿⠛⠉⠉⠁⠀⢻⣿⡇⠀⠀⠀⠀⠀⠀⢀⠈⣿⣿⡿⠉⠛⠛⠛⠉⠉⠀⠀
 """
 
+
+class Commitment:
+    def __init__(self, title: str, category: str, duration_minutes: Optional[int] = None, priority: int = 1, start_time: Optional[str] = None):
+        self.title = title
+        self.category = category
+        self.duration = duration_minutes
+        self.start_time = start_time
+        self.frequency_per_week = 0
+
+
+    def __repr__(self):
+        return (f"Commitment(title='{self.title}', duration={self.duration_minutes}, "
+                f"priority={self.priority}, start_time={self.start_time}, category={self.category})")
+    
+
+
 class Task:
-    def __init__(self, title, duration, priority_level):
+    def __init__(self, title, duration, priority_level, category):
         self.title = title
         self.duration = duration
         self.priority_level = priority_level
+        self.category = category
 
 class RoleManager: # All of the main program functions
     def __init__(self, username: Optional[str] = None):
@@ -85,11 +104,15 @@ class RoleManager: # All of the main program functions
 
     def display_roles(self):
         rprint("[bold green]Your roles are:[/bold green]")
+        self.username = self.role_dict["Username"]
         for role in self.role_dict:
+
             if self.role_dict[role] == True:
 
                 slow(f"  - {role}", 0.03, True)
                 print("-------------------------------------------")
+
+            
             
     
 
@@ -118,11 +141,11 @@ class RoleManager: # All of the main program functions
         slow("Are you a follower of Christ?", 0.03, True)
         user_input = input()
         if user_input.lower() in ("y", "yes"):
-            self.add_role("Christ follower", True)
+            self.add_role("Christ Follower", True)
             slow("That's great to hear! I made this tool specifically so that people like us can structure our lives to better serve him!", 0.03, True)
         
         elif user_input.lower() in ("n", "no"):
-            self.add_role("Christ follower", False)
+            self.add_role("Christ Follower", False)
             slow("Thanks for sharing. I just want you to know that Jesus loves you, and that if you're lost in the toxic world of self-improvement HE can legitimately rescue you from it - if you let him.", 0.03, True)
             slow("John 3:16 says: 'For God so loved the world, that he gave his only Son, that whoever believes in him should not perish but have eternal life.", 0.03, True)
             slow("Anyway ~", 0.03, True)
@@ -212,13 +235,28 @@ class RoleManager: # All of the main program functions
         print(self.role_dict)
         self.save_role_dict()
         self.run()
-        
+
+    #def check_commitments(self, schedule: list):
+        # load list of commitments
+        # check if time (schedule[0][0])'s conflict
+        # reorganize it
 
     def generate_schedule(self):
+
         import core.task_database as task_database
         cli.interface.clear_screen()
         start_time = datetime.now()
         schedule = []
+
+        # A BEDTIME IS JUS TA COMMITMENT
+        bedtime_hour = input("What hour would you like to go to bed by tonight?\n")
+        bedtime_minute = input("What minute?\n")
+        bedtime_AM_PM = input("AM or PM?\n")
+        
+
+        
+        
+        cli.interface.clear_screen()
 
         # Initial time setup
         hour = start_time.hour
@@ -240,8 +278,6 @@ class RoleManager: # All of the main program functions
             if self.role_dict[role] == True:
                 role_name = [role]
 
-
-
                 # for role category in task_dict
 
                 for role_category in task_database.task_dict.values():
@@ -249,13 +285,23 @@ class RoleManager: # All of the main program functions
                     # for specific task in task_dict
                 
                     for task_attribute in role_category.values():
+                        
+                                            
+                        if role_name[0] == task_attribute["category"]:
 
-                        if task_attribute["priority"] == 0:
-                            task = Task(task_attribute["name"], task_attribute["duration"], task_attribute["priority"])
+                        
+
+                        
+                            task = Task(task_attribute["name"], task_attribute["duration"], task_attribute["priority"], task_attribute["category"])
 
                             # Build readable time
                             readable_time = f'{current_hour}:{str(current_minute).zfill(2)} {AM_PM}'
-                            schedule.append([readable_time, task.title, role_name[0]])
+                              
+                            
+
+                            schedule.append([readable_time, task.title, task.category])
+                                
+
                             task_count += 1
 
                             # Update minute
@@ -269,7 +315,21 @@ class RoleManager: # All of the main program functions
                                     AM_PM = "PM" if AM_PM == "AM" else "AM"
                                 elif current_hour > 12:
                                     current_hour -= 12
+        
 
+
+        readable_bedtime = f'{bedtime_hour}:{str(bedtime_minute).zfill(2)} {bedtime_AM_PM}'
+        bedtime = Commitment("Bedtime", "Human", readable_bedtime)
+        schedule.append([readable_bedtime, bedtime.title, bedtime.category])
+        print(schedule)
+        
+        # full_schedule = check_commitments(schedule)
+                            
+                            # needs to be a commitments LIST
+                            # checks to see if readable time clashes with commitment time
+                            # returns the updated schedule, reorganized to be inline with given priority values
+
+        # schedule.append([readable_bedtime, task.title, task.category])
         print(tabulate(schedule, headers=["Time", "Activity", "Role"], tablefmt="fancy_grid"))
         exit()
 
@@ -279,17 +339,6 @@ class RoleManager: # All of the main program functions
         return(f"RoleManager(username='{self.username}')")
 
 
-class Commitment:
-    def __init__(self, title: str, duration_minutes: Optional[int] = None, priority: int = 1, start_time: Optional[str] = None):
-        self.title = title
-        self.duration = duration_minutes
-        self.start_time = start_time
-        self.frequency_per_week = 0
-
-    def __repr__(self):
-        return (f"Commitment(title='{self.title}', duration={self.duration_minutes}, "
-                f"priority={self.priority}, start_time={self.start_time})")
-    
 
 class Role:
     def __init__(self, name: str, commitments: Optional[List[Commitment]] = None): 
