@@ -11,7 +11,6 @@ from core import task_database
 from core.models import Task
 from core.models import Commitment
 
-
 class RoleManager: # All of the main program functions
     def __init__(self, username: Optional[str] = None):
         self.roles = []
@@ -64,9 +63,6 @@ class RoleManager: # All of the main program functions
                 slow(f"  - {role}", 0.03, True)
                 print("-------------------------------------------")
 
-            
-            
-    
 
     def add_role(self, role: str, status: bool):
         self.role_dict.update({role:status})
@@ -200,12 +196,10 @@ class RoleManager: # All of the main program functions
         start_time = datetime.now()
         schedule = []
 
-        # A BEDTIME IS JUST A COMMITMENT
+        # gets bedtime parameters
         bedtime_hour = input("What hour would you like to go to bed by tonight?\n")
         bedtime_minute = input("What minute?\n")
-        bedtime_AM_PM = input("AM or PM?\n")
-        
-
+        bedtime_AM_PM = input("AM or PM?\n").upper()
         
         
         cli.interface.clear_screen()
@@ -225,32 +219,41 @@ class RoleManager: # All of the main program functions
         current_hour = hour
         current_minute = minute
 
+
+
+        #FIXME: make it so its not 3 for loops nested
+        # probably change into its own function
+        #-------------------------------------------------------------------------
+
+        # looks at user_profile dictionary to see which roles you have
         for role in self.role_dict.keys():
             task_count = 1
+            # "if you have it"
             if self.role_dict[role] == True:
+                # "write that down"
                 role_name = [role]
 
-                # for role category in task_dict
-
+                # looks in the task_database dictionary that has been loaded earlier
                 for role_category in task_database.task_dict.values():
                 
-                    # for specific task in task_dict
+                    # for a specific task within current role_category
                 
                     for task_attribute in role_category.values():
                         
+                        # sees if user has that role
                                             
                         if role_name[0] == task_attribute["category"]:
 
                         
-
+                            # if so it creates a task object
                         
                             task = Task(task_attribute["name"], task_attribute["duration"], task_attribute["priority"], task_attribute["category"])
 
                             # Build readable time
+
                             readable_time = f'{current_hour}:{str(current_minute).zfill(2)} {AM_PM}'
                               
-                            
-
+                            # adds it to the schedule
                             schedule.append([readable_time, task.title, task.category])
                                 
 
@@ -268,12 +271,12 @@ class RoleManager: # All of the main program functions
                                 elif current_hour > 12:
                                     current_hour -= 12
         
-
+        #-------------------------------------------------------------------------
 
         readable_bedtime = f'{bedtime_hour}:{str(bedtime_minute).zfill(2)} {bedtime_AM_PM}'
         bedtime = Commitment("Bedtime", "Human", readable_bedtime)
         schedule.append([readable_bedtime, bedtime.title, bedtime.category])
-        print(schedule)
+        #print(schedule)
         
         # full_schedule = check_commitments(schedule)
                             
