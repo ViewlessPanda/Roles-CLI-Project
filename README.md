@@ -20,3 +20,4 @@ Roles is a command-line utility designed to help you identify your key roles in 
 
 ## ⚙️ Installation - include any instructions for necessary libraries etc.
 pip install rich
+pip install tabulate
