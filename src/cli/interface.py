@@ -1,7 +1,8 @@
-from core.models import RoleManager, Commitment, Role
+from core.role_manager import RoleManager
 import os
 import sys
 import time
+
 
 def run_cli():
     manager = RoleManager()

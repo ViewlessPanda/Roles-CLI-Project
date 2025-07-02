@@ -1,8 +1,6 @@
 import sys
 import argparse
 
-# This app does not exist for me, it exists for others to make scheduling their lives easier with the focus on God.
-# and so that I can get an internship hopefully which supports my future family.
 
 from rich import print as rprint
 import cli.interface
